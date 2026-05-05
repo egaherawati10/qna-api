@@ -4,7 +4,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CreateThreadDto } from './dto/create-thread.dto';
 import { UpdateThreadDto } from './dto/update-thread.dto';
 
-@Controller('api/threads')
+@Controller('threads')
 export class ThreadsController {
   constructor(private threadsService: ThreadsService) {}
 

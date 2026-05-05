@@ -3,7 +3,7 @@ import { AuthService } from './auth.service'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) {}
 
@@ -14,6 +14,7 @@ export class AuthController {
 
     @Post('login')
     @HttpCode(200)
+
     login(@Body() dto: LoginDto) {
         return this.authService.login(dto)
     }
