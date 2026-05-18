@@ -1,151 +1,192 @@
-# 🗣️ Simple Q&A Forum API
+# QNA API — Code Challenge Milestone 2
 
-A RESTful API for a Simple Q&A Forum application where users can ask questions and participate in discussions. Built as part of a 2-day backend code challenge.
-
----
-
-## 📋 Objective
-
-Build a secure RESTful API that allows users to register, log in, create discussion threads, and manage their own content. The system enforces authentication and authorization — users can only update or delete threads they created themselves.
+A RESTful API for a Simple Q&A Forum application built with **NestJS**, **PostgreSQL**, **Prisma ORM**, and **JWT Authentication**.
 
 ---
 
-## ✨ Features
+## Tech Stack
 
-- **User Management** — Registration, login with JWT token generation, and public profile viewing
-- **CRUD Threads** — Create, read, update, and delete discussion threads
-- **Authorization** — Users can only modify or delete their own threads
-- **Validation & Error Handling** — Handles empty inputs, invalid email formats, and unauthorized access with proper HTTP status codes (`400`, `401`, `403`, `404`, `500`)
-- **Database Relations** — One-to-many relationship between `users` and `threads`
-
----
-
-## 🛠️ Tech Stack
-
-- **Framework:** NestJS (Node.js)
-- **Database:** PostgreSQL (hosted on [Supabase](https://supabase.com))
-- **ORM:** Prisma
-- **Auth:** JWT (JSON Web Tokens) via `@nestjs/jwt` & `passport-jwt`
-- **Validation:** `class-validator` & `class-transformer`
-- **Config:** Environment variables via `.env`
+- **Framework:** NestJS (Node.js + TypeScript)
+- **Database:** PostgreSQL (via Prisma ORM)
+- **Authentication:** JWT (JSON Web Token) + Passport.js
+- **Password Hashing:** bcrypt
+- **API Documentation:** Swagger UI (`/api/docs`)
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### Prerequisites
-
-- Node.js (v18+) and npm
-- A [Supabase](https://supabase.com) account with a PostgreSQL project set up
-
-### Installation
+### 1. Clone the repository
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
-
-# 2. Install dependencies
-npm install
-
-# 3. Set up environment variables
-cp .env.example .env
-# Then fill in your Supabase credentials and JWT secret
-
-# 4. Run database migrations
-npx prisma migrate dev
-
-# 5. Start the development server
-npm run start:dev
+git clone https://github.com/egaherawati10/qna-api.git
+cd qna-api
 ```
 
-### Environment Variables
+### 2. Install dependencies
 
-Create a `.env` file in the project root:
+```bash
+npm install
+```
+
+### 3. Setup environment variables
+
+Copy `.env.example` to `.env` and fill in your values:
+
+```bash
+cp .env.example .env
+```
 
 ```env
-PORT=3000
-
-# Supabase PostgreSQL connection (Prisma format)
-DATABASE_URL="postgresql://postgres:your_db_password@your-supabase-host.supabase.co:5432/postgres?schema=public"
-
-JWT_SECRET=your_super_secret_key
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/DATABASE_NAME?schema=public"
+JWT_SECRET=your_jwt_secret_key_here
 JWT_EXPIRES_IN=7d
+PORT=3001
 ```
 
----
+### 4. Run database migration
 
-## 📡 API Endpoints
-
-### User & Auth Endpoints
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:-------------:|
-| `POST` | `/api/auth/register` | Register a new user (password is hashed in DB) | ❌ |
-| `POST` | `/api/auth/login` | Log in and receive a JWT token | ❌ |
-| `GET` | `/api/users/:id` | View a user's public profile by ID | ❌ |
-
-### Thread Endpoints
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:-------------:|
-| `POST` | `/api/threads` | Create a new thread/question | ✅ |
-| `GET` | `/api/threads` | List all threads from all users | ❌ |
-| `GET` | `/api/threads/my-threads` | List threads of the logged-in user | ✅ |
-| `GET` | `/api/threads/:id` | View details of a specific thread | ❌ |
-| `PUT` | `/api/threads/:id` | Update a thread *(creator only)* | ✅ |
-| `DELETE` | `/api/threads/:id` | Delete a thread *(creator only)* | ✅ |
-
-> **Protected routes** require a `Bearer` token in the `Authorization` header:
-> ```
-> Authorization: Bearer <your_jwt_token>
-> ```
-
----
-
-## 📂 Project Structure
-
-```
-├── prisma/
-│   ├── schema.prisma       # Database schema & models
-│   └── migrations/         # Auto-generated migration files
-├── src/
-│   ├── auth/               # Auth module (register, login, JWT strategy)
-│   │   ├── auth.controller.ts
-│   │   ├── auth.service.ts
-│   │   ├── auth.module.ts
-│   │   ├── jwt.strategy.ts
-│   │   └── dto/
-│   ├── users/              # Users module (profile)
-│   │   ├── users.controller.ts
-│   │   ├── users.service.ts
-│   │   ├── users.module.ts
-│   │   └── dto/
-│   ├── threads/            # Threads module (CRUD)
-│   │   ├── threads.controller.ts
-│   │   ├── threads.service.ts
-│   │   ├── threads.module.ts
-│   │   └── dto/
-│   ├── prisma/             # Prisma service (shared DB client)
-│   │   └── prisma.service.ts
-│   └── main.ts             # App entry point (Swagger setup)
-├── .env.example
-├── package.json
-└── README.md
+```bash
+npx prisma migrate dev
 ```
 
+### 5. (Optional) Seed the database
+
+```bash
+npx prisma db seed
+```
+
+### 6. Start the server
+
+```bash
+# Development
+npm run start:dev
+
+# Production
+npm run start:prod
+```
+
+Server will run on: `http://localhost:3001`
+
 ---
 
-## 📬 Deliverables
+## API Documentation (Swagger)
 
-- [x] Public GitHub repository with complete source code
-- [x] API documentation via Swagger UI / OpenAPI (screenshots included)
-  - Endpoint URL and HTTP method
-  - Required request bodies, headers, and parameters
-  - Expected responses for success (`200`, `201`) and error states (`400`, `401`, `404`)
+Once the server is running, open:
+
+```
+http://localhost:3001/api/docs
+```
+
+Click **Authorize** and paste your JWT token (obtained from `POST /api/auth/login`) to access protected endpoints.
 
 ---
 
-## 📄 License
+## API Endpoints
 
-This project was built as part of a timed code challenge. Feel free to use it as a reference.
+### Auth
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/auth/register` | Register a new user | ❌ |
+| POST | `/api/auth/login` | Login and get JWT token | ❌ |
+
+### Users
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/api/users/:id` | View a user's public profile | ❌ |
+
+### Threads
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/api/threads` | List all threads | ❌ |
+| POST | `/api/threads` | Create a new thread | ✅ |
+| GET | `/api/threads/my-threads` | List my threads | ✅ |
+| GET | `/api/threads/:id` | Get thread detail | ❌ |
+| PUT | `/api/threads/:id` | Update a thread (owner only) | ✅ |
+| DELETE | `/api/threads/:id` | Delete a thread (owner only) | ✅ |
+
+---
+
+## Error Responses
+
+| Status Code | Meaning |
+|-------------|---------|
+| 400 | Bad Request — validation error |
+| 401 | Unauthorized — missing or invalid JWT |
+| 403 | Forbidden — not the resource owner |
+| 404 | Not Found — resource doesn't exist |
+| 409 | Conflict — email/username already taken |
+| 500 | Internal Server Error |
+
+---
+
+## Screenshots
+
+### POST `/api/auth/register`
+
+Register new account
+![Register new account](public/assets/register/pre-register.png)
+
+Register success
+![Register success response](public/assets/register/register-response.png)
+
+Re-register with same email
+![Re-register with same email error response](public/assets/register/same-email-error.png)
+
+### POST `/api/auth/login`
+
+Successfully logged in
+![Login successful](public/assets/login/login-response.png)
+
+Invalid credentials
+![Invalid credentials response](public/assets/login/invalid-credential-response.png)
+
+GET `/api/users/:id`
+
+User found
+![User found](public/assets/usersId/get-usersId.png)
+
+User not found
+![User not found](public/assets/usersId/user-not-found.png)
+
+### GET `/api/threads`
+
+Get all threads
+![Get all threads](public/assets/threads/get-all-threads.png)
+
+All threads
+![All threads](public/assets/threads/all-threads.png)
+
+### GET `/api/threads/:id`
+
+Get thread by Id
+![Get thread by id](public/assets/threads/get-thread-by-id.png)
+
+### POST `/api/threads`
+
+Post thread
+![Post a thread](public/assets/threads/post-thread.png)
+
+### GET `/api/threads/my-thread`
+
+Get my threads
+![Get my threads](public/assets/threads/get-my-threads.png)
+
+### PUT `/api/threads/:id`
+
+Update others' thread
+![Update others' thread](public/assets/threads/update-others-thread.png)
+
+Update my thread
+![Update my own thread](public/assets/threads/update-my-thread.png)
+
+### DELETE `/api/threads/:id`
+
+Delete others' thread
+![Delete others' thread](public/assets/threads/delete-others-thread.png)
+
+Delete my thread
+![Delete my own thread](public/assets/threads/delete-my-thread.png)
